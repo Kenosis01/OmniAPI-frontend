@@ -6,7 +6,7 @@
     
     <!-- SEO Meta Tags -->
     <title>OmniAPI - Professional AI Services | Chat, Images, Search & TTS</title>
-    <meta name="description" content="OmniAPI provides professional AI services including chat completions, image generation, web search, and text-to-speech. Access 8+ AI models through our unified API.">
+    <meta name="description" content="OmniAPI provides professional AI services including chat completions, image generation, web search, and text-to-speech. Access 11+ AI models including Grok, GPT-4, and more through our unified API.">
     <meta name="keywords" content="AI API, chat completions, image generation, web search, text to speech, artificial intelligence, API services, machine learning">
     <meta name="author" content="OmniAPI">
     <meta name="robots" content="index, follow">
@@ -866,7 +866,7 @@
             <div class="hero-subtitle">Professional AI Services</div>
             <p class="hero-description">
                 Unified API platform for chat completions, image generation, web search, and text-to-speech. 
-                Access 8+ premium AI models through a single, powerful interface.
+                Access 11+ premium AI models including Grok, GPT-4, LLaMA, and more through a single, powerful interface.
             </p>
             <div class="cta-buttons">
                 <a href="playground.html" class="btn btn-primary">
@@ -890,7 +890,7 @@
                 <span class="feature-icon chat">💬</span>
                 <h3 class="feature-title">Chat Completions</h3>
                 <p class="feature-description">
-                    Advanced conversational AI with multiple premium models including GPT-4, Qwen, and LLaMA for intelligent dialogue
+                    Advanced conversational AI with 11+ premium models including Grok-3, GPT-4, Qwen, LLaMA, and DeepSeek for intelligent dialogue
                 </p>
             </div>
             <div class="feature-card glass">
@@ -932,15 +932,15 @@
         </p>
         <div class="stats-grid">
             <div class="stat-card glass">
-                <div class="stat-number">4</div>
+                <div class="stat-number">5</div>
                 <div class="stat-label">AI Services</div>
             </div>
             <div class="stat-card glass">
-                <div class="stat-number">8+</div>
+                <div class="stat-number">11</div>
                 <div class="stat-label">Chat Models</div>
             </div>
             <div class="stat-card glass">
-                <div class="stat-number">5+</div>
+                <div class="stat-number">5</div>
                 <div class="stat-label">Image Models</div>
             </div>
             <div class="stat-card glass">
@@ -1105,9 +1105,65 @@
             }
         });
 
+        // Load dynamic stats from API
+        async function loadDynamicStats() {
+            try {
+                const response = await fetch('https://user669-omniapi.hf.space/models');
+                const data = await response.json();
+                
+                if (data.chat_models && data.chat_models.total) {
+                    const chatModelsElement = document.querySelector('.stat-card:nth-child(2) .stat-number');
+                    if (chatModelsElement) {
+                        animateNumber(chatModelsElement, data.chat_models.total);
+                    }
+                }
+                
+                if (data.image_models && data.image_models.total) {
+                    const imageModelsElement = document.querySelector('.stat-card:nth-child(3) .stat-number');
+                    if (imageModelsElement) {
+                        animateNumber(imageModelsElement, data.image_models.total);
+                    }
+                }
+                
+                if (data.tts_providers && data.tts_providers.total) {
+                    const ttsProvidersElement = document.querySelector('.stat-card:nth-child(4) .stat-number');
+                    if (ttsProvidersElement) {
+                        animateNumber(ttsProvidersElement, data.tts_providers.total + '+');
+                    }
+                }
+                
+                console.log('Dynamic stats loaded successfully');
+            } catch (error) {
+                console.log('Using static stats (API not available)');
+            }
+        }
+
+        // Animate number counting
+        function animateNumber(element, targetValue) {
+            const isNumberOnly = typeof targetValue === 'number';
+            const target = isNumberOnly ? targetValue : parseInt(targetValue);
+            const current = parseInt(element.textContent) || 0;
+            const increment = target > current ? 1 : -1;
+            const duration = 1000; // 1 second
+            const steps = Math.abs(target - current);
+            const stepDuration = duration / steps;
+            
+            let currentValue = current;
+            
+            const timer = setInterval(() => {
+                currentValue += increment;
+                element.textContent = isNumberOnly ? currentValue : currentValue + '+';
+                
+                if (currentValue === target) {
+                    clearInterval(timer);
+                }
+            }, stepDuration);
+        }
+
         // Initialize particles when page loads
         document.addEventListener('DOMContentLoaded', () => {
             createParticles();
+            loadDynamicStats(); // Load dynamic stats
             
             // Add initial animation delay to feature cards
             const featureCards = document.querySelectorAll('.feature-card');
