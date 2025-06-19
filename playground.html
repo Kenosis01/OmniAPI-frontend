@@ -369,6 +369,107 @@
             width: 100%;
             margin-top: 16px;
         }
+
+        /* Code Snippet Panel */
+        .code-snippet-panel {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-snippet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .code-snippet-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .language-tab {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .language-tab.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .language-tab:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        .code-snippet-content {
+            position: relative;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #ffffff;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .copy-code-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-code-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .copy-code-btn.copied {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+
+        /* Syntax highlighting */
+        .code-keyword { color: #ff79c6; }
+        .code-string { color: #f1fa8c; }
+        .code-comment { color: #6272a4; }
+        .code-function { color: #50fa7b; }
+        .code-variable { color: #8be9fd; }
+        .code-number { color: #bd93f9; }
     </style>
 </head>
 <body>
@@ -554,6 +655,25 @@
                         </div>
                         <button class="btn btn-primary" onclick="testTranscription()" id="transcribe-btn" disabled>Transcribe Audio</button>
                     </div>
+
+                    <!-- Code Snippet Panel -->
+                    <div class="code-snippet-panel" id="code-snippet-panel">
+                        <div class="code-snippet-header">
+                            <div class="code-snippet-title">
+                                <span>💻</span> Code Example
+                            </div>
+                            <div class="language-tabs">
+                                <div class="language-tab active" onclick="switchLanguage('python')">Python</div>
+                                <div class="language-tab" onclick="switchLanguage('javascript')">JavaScript</div>
+                                <div class="language-tab" onclick="switchLanguage('curl')">cURL</div>
+                                <div class="language-tab" onclick="switchLanguage('nodejs')">Node.js</div>
+                            </div>
+                        </div>
+                        <div class="code-snippet-content">
+                            <div class="code-block" id="code-block"></div>
+                            <button class="copy-code-btn" onclick="copyCode()">Copy</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Output Panel -->
@@ -605,6 +725,9 @@
             if (endpoint === 'transcribe') {
                 setupTranscriptionFileInput();
             }
+            
+            // Update code snippet for new endpoint
+            setTimeout(updateCodeSnippet, 100);
         }
 
         function showLoading() {
@@ -927,9 +1050,296 @@
             }
         }
 
+        // Code snippet generation
+        let currentLanguage = 'python';
+        let currentEndpointData = {};
+
+        function switchLanguage(language) {
+            currentLanguage = language;
+            
+            // Update active tab
+            document.querySelectorAll('.language-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Generate code for current endpoint
+            generateCodeSnippet();
+        }
+
+        function updateCodeSnippet() {
+            // Get current form data
+            const endpoint = currentEndpoint;
+            let data = {};
+            
+            switch(endpoint) {
+                case 'chat':
+                    data = {
+                        model: document.getElementById('chat-model').value,
+                        prompt: document.getElementById('chat-prompt').value
+                    };
+                    break;
+                case 'image':
+                    data = {
+                        model: document.getElementById('image-model').value,
+                        prompt: document.getElementById('image-prompt').value,
+                        size: document.getElementById('image-size').value
+                    };
+                    break;
+                case 'search':
+                    data = {
+                        query: document.getElementById('search-query').value,
+                        max_results: parseInt(document.getElementById('search-max').value),
+                        region: document.getElementById('search-region').value
+                    };
+                    break;
+                case 'tts':
+                    data = {
+                        provider: document.getElementById('tts-provider').value,
+                        voice: document.getElementById('tts-voice').value,
+                        text: document.getElementById('tts-text').value
+                    };
+                    break;
+                case 'transcribe':
+                    data = {
+                        file: 'audio_file.mp3'
+                    };
+                    break;
+            }
+            
+            currentEndpointData = { endpoint, data };
+            generateCodeSnippet();
+        }
+
+        function generateCodeSnippet() {
+            const { endpoint, data } = currentEndpointData;
+            if (!endpoint) return;
+            
+            let code = '';
+            const baseUrl = 'https://user669-omniapi.hf.space';
+            
+            switch(currentLanguage) {
+                case 'python':
+                    code = generatePythonCode(endpoint, data, baseUrl);
+                    break;
+                case 'javascript':
+                    code = generateJavaScriptCode(endpoint, data, baseUrl);
+                    break;
+                case 'curl':
+                    code = generateCurlCode(endpoint, data, baseUrl);
+                    break;
+                case 'nodejs':
+                    code = generateNodeJSCode(endpoint, data, baseUrl);
+                    break;
+            }
+            
+            document.getElementById('code-block').textContent = code;
+        }
+
+        function generatePythonCode(endpoint, data, baseUrl) {
+            const endpointMap = {
+                'chat': '/v1/chat/completions',
+                'image': '/generate',
+                'search': '/websearch',
+                'tts': '/ttsgenerate',
+                'transcribe': '/transcribe'
+            };
+            
+            if (endpoint === 'transcribe') {
+                return `import requests
+
+url = "${baseUrl}${endpointMap[endpoint]}"
+
+# Upload audio file
+with open("${data.file}", "rb") as audio_file:
+    files = {"audio_file": audio_file}
+    response = requests.post(url, files=files)
+
+if response.status_code == 200:
+    result = response.json()
+    if result["success"]:
+        print("Transcription:", result["transcription"])
+    else:
+        print("Error:", result["message"])
+else:
+    print("Request failed:", response.status_code)`;
+            }
+            
+            return `import requests
+import json
+
+url = "${baseUrl}${endpointMap[endpoint]}"
+data = ${JSON.stringify(data, null, 4)}
+
+response = requests.post(url, json=data)
+
+if response.status_code == 200:
+    result = response.json()
+    print(json.dumps(result, indent=2))
+else:
+    print("Request failed:", response.status_code)
+    print(response.text)`;
+        }
+
+        function generateJavaScriptCode(endpoint, data, baseUrl) {
+            const endpointMap = {
+                'chat': '/v1/chat/completions',
+                'image': '/generate',
+                'search': '/websearch',
+                'tts': '/ttsgenerate',
+                'transcribe': '/transcribe'
+            };
+            
+            if (endpoint === 'transcribe') {
+                return `const formData = new FormData();
+formData.append('audio_file', audioFile); // audioFile is a File object
+
+fetch('${baseUrl}${endpointMap[endpoint]}', {
+    method: 'POST',
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    if (data.success) {
+        console.log('Transcription:', data.transcription);
+    } else {
+        console.error('Error:', data.message);
+    }
+})
+.catch(error => {
+    console.error('Error:', error);
+});`;
+            }
+            
+            return `fetch('${baseUrl}${endpointMap[endpoint]}', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(${JSON.stringify(data, null, 8)})
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Success:', data);
+})
+.catch(error => {
+    console.error('Error:', error);
+});`;
+        }
+
+        function generateCurlCode(endpoint, data, baseUrl) {
+            const endpointMap = {
+                'chat': '/v1/chat/completions',
+                'image': '/generate',
+                'search': '/websearch',
+                'tts': '/ttsgenerate',
+                'transcribe': '/transcribe'
+            };
+            
+            if (endpoint === 'transcribe') {
+                return `curl -X POST "${baseUrl}${endpointMap[endpoint]}" \\
+  -F "audio_file=@${data.file}"`;
+            }
+            
+            return `curl -X POST "${baseUrl}${endpointMap[endpoint]}" \\
+  -H "Content-Type: application/json" \\
+  -d '${JSON.stringify(data)}'`;
+        }
+
+        function generateNodeJSCode(endpoint, data, baseUrl) {
+            const endpointMap = {
+                'chat': '/v1/chat/completions',
+                'image': '/generate',
+                'search': '/websearch',
+                'tts': '/ttsgenerate',
+                'transcribe': '/transcribe'
+            };
+            
+            if (endpoint === 'transcribe') {
+                return `const fs = require('fs');
+const FormData = require('form-data');
+const axios = require('axios');
+
+const form = new FormData();
+form.append('audio_file', fs.createReadStream('${data.file}'));
+
+axios.post('${baseUrl}${endpointMap[endpoint]}', form, {
+    headers: {
+        ...form.getHeaders()
+    }
+})
+.then(response => {
+    if (response.data.success) {
+        console.log('Transcription:', response.data.transcription);
+    } else {
+        console.error('Error:', response.data.message);
+    }
+})
+.catch(error => {
+    console.error('Error:', error.response?.data || error.message);
+});`;
+            }
+            
+            return `const axios = require('axios');
+
+const data = ${JSON.stringify(data, null, 4)};
+
+axios.post('${baseUrl}${endpointMap[endpoint]}', data, {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => {
+    console.log('Success:', response.data);
+})
+.catch(error => {
+    console.error('Error:', error.response?.data || error.message);
+});`;
+        }
+
+        function copyCode() {
+            const codeBlock = document.getElementById('code-block');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-code-btn');
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // Add event listeners to form inputs to update code snippets
+        function addCodeUpdateListeners() {
+            // Chat form
+            document.getElementById('chat-model').addEventListener('change', updateCodeSnippet);
+            document.getElementById('chat-prompt').addEventListener('input', updateCodeSnippet);
+            
+            // Image form
+            document.getElementById('image-model').addEventListener('change', updateCodeSnippet);
+            document.getElementById('image-prompt').addEventListener('input', updateCodeSnippet);
+            document.getElementById('image-size').addEventListener('change', updateCodeSnippet);
+            
+            // Search form
+            document.getElementById('search-query').addEventListener('input', updateCodeSnippet);
+            document.getElementById('search-max').addEventListener('input', updateCodeSnippet);
+            document.getElementById('search-region').addEventListener('change', updateCodeSnippet);
+            
+            // TTS form
+            document.getElementById('tts-provider').addEventListener('change', updateCodeSnippet);
+            document.getElementById('tts-voice').addEventListener('change', updateCodeSnippet);
+            document.getElementById('tts-text').addEventListener('input', updateCodeSnippet);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             selectEndpoint('chat');
+            addCodeUpdateListeners();
+            updateCodeSnippet();
         });
     </script>
 </body>
