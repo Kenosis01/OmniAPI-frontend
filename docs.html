@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Documentation - OmniAPI | Complete API Reference</title>
+    <meta name="description" content="Complete documentation for OmniAPI services including chat completions, image generation, web search, and text-to-speech endpoints with examples.">
+    <meta name="keywords" content="OmniAPI documentation, API reference, chat completions, image generation, web search, text to speech">
+    <meta name="author" content="OmniAPI">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/apple-touch-icon.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 16px 32px;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 300px;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 100px;
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-content {
+            padding: 24px;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .endpoint-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .endpoint-nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .endpoint-nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            transform: translateX(4px);
+        }
+
+        .endpoint-nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .nav-method {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #000000;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 20px 40px;
+            max-width: calc(100% - 300px);
+        }
+
+        .docs-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .docs-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .docs-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Base URL Section */
+        .base-url {
+            padding: 24px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .base-url h3 {
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+        }
+
+        .url-code {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: inline-block;
+            color: #ffffff;
+        }
+
+        /* Endpoint Sections */
+        .endpoint-section {
+            margin-bottom: 80px;
+            padding: 40px;
+        }
+
+        .endpoint-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .method-badge {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #000;
+            background: #fff;
+        }
+
+        .endpoint-path {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .endpoint-description {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .subsection {
+            margin-bottom: 40px;
+        }
+
+        .subsection h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .subsection h4 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .code-block {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 24px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative;
+        }
+
+        .code-block pre {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-lang {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .parameter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .parameter-table th,
+        .parameter-table td {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            text-align: left;
+        }
+
+        .parameter-table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .parameter-table td {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .required {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .optional {
+            color: #51cf66;
+            font-weight: 600;
+        }
+
+        .model-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+
+        .model-tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .example-card {
+            padding: 24px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .example-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #ffffff;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 280px;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 20px;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 120px;
+                left: 20px;
+                z-index: 1001;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: #ffffff;
+                padding: 12px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .endpoint-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .docs-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass">
+        <div class="nav-container">
+            <div class="logo">OmniAPI</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="playground.html">Playground</a></li>
+                <li><a href="#docs">Docs</a></li>
+                <li><a href="https://user669-omniapi.hf.space/docs" target="_blank">FastAPI Docs</a></li>
+                <li><a href="https://ko-fi.com/imkenosis" target="_blank">Donate</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar glass" id="sidebar">
+            <div class="sidebar-content">
+                <h2>API Endpoints</h2>
+                <div class="endpoint-nav">
+                    <a href="#overview" class="endpoint-nav-item active">
+                        <div class="nav-method">INFO</div>
+                        Overview
+                    </a>
+                    <a href="#chat" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        Chat Completions
+                    </a>
+                    <a href="#models" class="endpoint-nav-item">
+                        <div class="nav-method">GET</div>
+                        Chat Models
+                    </a>
+                    <a href="#image" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        Image Generation
+                    </a>
+                    <a href="#image-models" class="endpoint-nav-item">
+                        <div class="nav-method">GET</div>
+                        Image Models
+                    </a>
+                    <a href="#websearch" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        Web Search
+                    </a>
+                    <a href="#imgsearch" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        Image Search
+                    </a>
+                    <a href="#videosearch" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        Video Search
+                    </a>
+                    <a href="#tts-providers" class="endpoint-nav-item">
+                        <div class="nav-method">GET</div>
+                        TTS Providers
+                    </a>
+                    <a href="#tts-voices" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        TTS Voices
+                    </a>
+                    <a href="#tts-generate" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        TTS Generate
+                    </a>
+                    <a href="#transcribe" class="endpoint-nav-item">
+                        <div class="nav-method">POST</div>
+                        Audio Transcription
+                    </a>
+                    <a href="#health" class="endpoint-nav-item">
+                        <div class="nav-method">GET</div>
+                        Health Check
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="docs-header">
+                <h1 class="docs-title">API Documentation</h1>
+                <p class="docs-subtitle">Complete guide to OmniAPI services with examples</p>
+            </div>
+
+            <!-- Base URL -->
+            <div id="overview" class="base-url glass-strong">
+                <h3>Base URL</h3>
+                <div class="url-code">https://user669-omniapi.hf.space</div>
+                <p style="margin-top: 12px; color: rgba(255, 255, 255, 0.7);">Live API endpoint on Hugging Face Spaces</p>
+            </div>
+
+            <!-- Chat Completions -->
+            <div id="chat" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/v1/chat/completions</span>
+                </div>
+                <p class="endpoint-description">
+                    Generate AI chat responses using advanced language models. This endpoint provides access to multiple premium AI models for intelligent conversations, text generation, and question answering.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><code>model</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>The AI model to use for completion</td>
+                        </tr>
+                        <tr>
+                            <td><code>prompt</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>The input text to generate a response for</td>
+                        </tr>
+                        <tr>
+                            <td><code>system_prompt</code></td>
+                            <td>string</td>
+                            <td><span class="optional">Optional</span></td>
+                            <td>System prompt to set AI behavior (default: "You are a helpful AI assistant.")</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Available Models</h3>
+                    <div class="model-tags">
+                        <span class="model-tag">qwen-3-235b</span>
+                        <span class="model-tag">llama-4-maverick</span>
+                        <span class="model-tag">llama-4-scout</span>
+                        <span class="model-tag">gpt-4.1</span>
+                        <span class="model-tag">deepseek-r1</span>
+                        <span class="model-tag">gpt-4o</span>
+                        <span class="model-tag">gpt-4o-mini</span>
+                        <span class="model-tag">qwq-32b</span>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/v1/chat/completions" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "gpt-4o",
+    "prompt": "Explain quantum computing in simple terms",
+    "system_prompt": "You are a helpful physics teacher who explains complex topics simply."
+  }'</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">Python</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">python</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>import requests
+
+url = "https://user669-omniapi.hf.space/v1/chat/completions"
+data = {
+    "model": "gpt-4o",
+    "prompt": "Explain quantum computing in simple terms",
+    "system_prompt": "You are a helpful physics teacher who explains complex topics simply."
+}
+
+response = requests.post(url, json=data)
+result = response.json()
+print(result["response"])</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">JavaScript</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">javascript</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>const response = await fetch('https://user669-omniapi.hf.space/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    model: 'gpt-4o',
+    prompt: 'Explain quantum computing in simple terms',
+    system_prompt: 'You are a helpful physics teacher who explains complex topics simply.'
+  })
+});
+
+const data = await response.json();
+console.log(data.response);</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "messageId": "msg-abc123def456",
+  "response": "Quantum computing is a revolutionary technology...",
+  "finishReason": "stop",
+  "usage": {
+    "promptTokens": 8,
+    "completionTokens": 150
+  }
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Models -->
+            <div id="models" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">GET</span>
+                    <span class="endpoint-path">/v1/models</span>
+                </div>
+                <p class="endpoint-description">
+                    Retrieve a list of all available chat completion models. This endpoint returns all supported AI models that can be used with the chat completions endpoint.
+                </p>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X GET "https://user669-omniapi.hf.space/v1/models"</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">Python</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">python</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>import requests
+
+response = requests.get("https://user669-omniapi.hf.space/v1/models")
+models = response.json()
+print(models["models"])</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "models": [
+    "qwen-3-235b",
+    "llama-4-maverick", 
+    "llama-4-scout",
+    "gpt-4.1",
+    "deepseek-r1",
+    "gpt-4o",
+    "gpt-4o-mini",
+    "qwq-32b"
+  ]
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Generation -->
+            <div id="image" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/generate</span>
+                </div>
+                <p class="endpoint-description">
+                    Generate high-quality images from text descriptions using advanced AI models. Supports multiple image generation models with various sizes and styles.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><code>prompt</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>Text description of the image to generate</td>
+                        </tr>
+                        <tr>
+                            <td><code>model</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>Image generation model to use</td>
+                        </tr>
+                        <tr>
+                            <td><code>size</code></td>
+                            <td>string</td>
+                            <td><span class="optional">Optional</span></td>
+                            <td>Image size (default: "1024x1024")</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Available Models</h3>
+                    <div class="model-tags">
+                        <span class="model-tag">flux.1-dev</span>
+                        <span class="model-tag">flux.1-schnell</span>
+                        <span class="model-tag">flux.1-pro</span>
+                        <span class="model-tag">exo-image</span>
+                        <span class="model-tag">gpt-image</span>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/generate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A futuristic cityscape at sunset with flying cars",
+    "model": "flux.1-dev",
+    "size": "1024x1024"
+  }'</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">Python</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">python</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>import requests
+
+url = "https://user669-omniapi.hf.space/generate"
+data = {
+    "prompt": "A futuristic cityscape at sunset with flying cars",
+    "model": "flux.1-dev",
+    "size": "1024x1024"
+}
+
+response = requests.post(url, json=data)
+result = response.json()
+print(result)</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Models -->
+            <div id="image-models" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">GET</span>
+                    <span class="endpoint-path">/models</span>
+                </div>
+                <p class="endpoint-description">
+                    Retrieve a list of all available image generation models. This endpoint returns all supported AI models for image generation.
+                </p>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X GET "https://user669-omniapi.hf.space/models"</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>[
+  "flux.1-dev",
+  "flux.1-schnell", 
+  "flux.1-pro",
+  "exo-image",
+  "gpt-image"
+]</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Search -->
+            <div id="websearch" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/websearch</span>
+                </div>
+                <p class="endpoint-description">
+                    Search the web using DuckDuckGo with automatic fallback to Snapzion API for reliability. Can also scrape content from specific URLs.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><code>query</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>Search query or URL to scrape</td>
+                        </tr>
+                        <tr>
+                            <td><code>max_results</code></td>
+                            <td>integer</td>
+                            <td><span class="optional">Optional</span></td>
+                            <td>Maximum number of results (default: 10)</td>
+                        </tr>
+                        <tr>
+                            <td><code>region</code></td>
+                            <td>string</td>
+                            <td><span class="optional">Optional</span></td>
+                            <td>Search region (default: "us")</td>
+                        </tr>
+                        <tr>
+                            <td><code>safesearch</code></td>
+                            <td>string</td>
+                            <td><span class="optional">Optional</span></td>
+                            <td>Safe search setting (default: "moderate")</td>
+                        </tr>
+                        <tr>
+                            <td><code>max_chars</code></td>
+                            <td>integer</td>
+                            <td><span class="optional">Optional</span></td>
+                            <td>Max characters for URL scraping (default: 2000)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">Web Search</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/websearch" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "artificial intelligence trends 2024",
+    "max_results": 5,
+    "region": "us"
+  }'</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">URL Scraping</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/websearch" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "https://example.com/article",
+    "max_chars": 3000
+  }'</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Search -->
+            <div id="imgsearch" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/imgsearch</span>
+                </div>
+                <p class="endpoint-description">
+                    Search for images using DuckDuckGo. Returns image results with titles, URLs, and thumbnails.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <p>Same parameters as <code>/websearch</code> endpoint.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/imgsearch" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "beautiful landscapes",
+    "max_results": 10,
+    "safesearch": "moderate"
+  }'</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>[
+  {
+    "title": "Beautiful Mountain Landscape",
+    "image_url": "https://example.com/image1.jpg",
+    "source_url": "https://example.com/page1",
+    "thumbnail": "https://example.com/thumb1.jpg"
+  }
+]</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Search -->
+            <div id="videosearch" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/videosearch</span>
+                </div>
+                <p class="endpoint-description">
+                    Search for videos using DuckDuckGo. Returns video results with titles, URLs, descriptions, and thumbnails.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <p>Same parameters as <code>/websearch</code> endpoint.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/videosearch" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "machine learning tutorials",
+    "max_results": 10
+  }'</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TTS Providers -->
+            <div id="tts-providers" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">GET</span>
+                    <span class="endpoint-path">/ttsproviders</span>
+                </div>
+                <p class="endpoint-description">
+                    Get a list of available Text-to-Speech providers. Each provider offers different voice options and quality levels.
+                </p>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X GET "https://user669-omniapi.hf.space/ttsproviders"</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "providers": [
+    "GesseritTTS",
+    "SpeechMaTTS",
+    "SthirTTS",
+    "StreamElements",
+    "DeepgramTTS",
+    "OpenAIFMTTS",
+    "MurfAITTS"
+  ]
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TTS Voices -->
+            <div id="tts-voices" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/ttsvoices</span>
+                </div>
+                <p class="endpoint-description">
+                    Get available voices for a specific TTS provider. Each voice has different characteristics like gender, accent, and language.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><code>provider</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>TTS provider name (see /ttsproviders)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/ttsvoices" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "provider": "GesseritTTS"
+  }'</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "provider": "GesseritTTS",
+  "voices": [
+    "Emma",
+    "Liam",
+    "Olivia",
+    "Noah",
+    "Ava"
+  ]
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TTS Generate -->
+            <div id="tts-generate" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/ttsgenerate</span>
+                </div>
+                <p class="endpoint-description">
+                    Generate text-to-speech audio from text using various TTS providers and voices. Maximum text length is 5000 characters.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><code>text</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>Text to convert to speech (max 5000 chars)</td>
+                        </tr>
+                        <tr>
+                            <td><code>provider</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>TTS provider name (see /ttsproviders)</td>
+                        </tr>
+                        <tr>
+                            <td><code>voice</code></td>
+                            <td>string</td>
+                            <td><span class="required">Required</span></td>
+                            <td>Voice name (see /ttsvoices)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/ttsgenerate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Hello, this is a test of text-to-speech generation.",
+    "provider": "GesseritTTS",
+    "voice": "Emma"
+  }'</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio Transcription -->
+            <div id="transcribe" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">POST</span>
+                    <span class="endpoint-path">/transcribe</span>
+                </div>
+                <p class="endpoint-description">
+                    Transcribe audio files to text using AI transcription service. Supports various audio formats including MP3, WAV, M4A, AAC, OGG, and FLAC with high accuracy speech-to-text conversion.
+                </p>
+
+                <div class="subsection">
+                    <h3>Request Parameters</h3>
+                    <table class="parameter-table">
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Type</th>
+                            <th>Required</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td><code>audio_file</code></td>
+                            <td>file</td>
+                            <td><span class="required">Required</span></td>
+                            <td>Audio file to transcribe (max 50MB)</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3>Supported Audio Formats</h3>
+                    <div class="model-tags">
+                        <span class="model-tag">MP3</span>
+                        <span class="model-tag">WAV</span>
+                        <span class="model-tag">M4A</span>
+                        <span class="model-tag">AAC</span>
+                        <span class="model-tag">OGG</span>
+                        <span class="model-tag">FLAC</span>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X POST "https://user669-omniapi.hf.space/transcribe" \
+  -F "audio_file=@/path/to/your/audio.mp3"</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">Python</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">python</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>import requests
+
+url = "https://user669-omniapi.hf.space/transcribe"
+
+with open("audio.mp3", "rb") as audio_file:
+    files = {"audio_file": audio_file}
+    response = requests.post(url, files=files)
+
+result = response.json()
+if result["success"]:
+    print("Transcription:", result["transcription"])
+else:
+    print("Error:", result["message"])</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">JavaScript (Browser)</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">javascript</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>const fileInput = document.getElementById('audioFile');
+const file = fileInput.files[0];
+
+const formData = new FormData();
+formData.append('audio_file', file);
+
+const response = await fetch('https://user669-omniapi.hf.space/transcribe', {
+  method: 'POST',
+  body: formData
+});
+
+const data = await response.json();
+if (data.success) {
+  console.log('Transcription:', data.transcription);
+} else {
+  console.error('Error:', data.message);
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "success": true,
+  "message": "Transcription completed successfully",
+  "transcription": "Hello, this is a sample audio transcription. The AI has successfully converted the speech to text.",
+  "filename": "audio.mp3",
+  "file_size": 1048576
+}</pre>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Error Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "success": false,
+  "message": "Invalid file type. Please upload an audio file (MP3, WAV, M4A, etc.)",
+  "transcription": null,
+  "filename": "document.pdf",
+  "file_size": null
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Health Check -->
+            <div id="health" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">GET</span>
+                    <span class="endpoint-path">/health</span>
+                </div>
+                <p class="endpoint-description">
+                    Check the health status of the API service. Returns service status and basic information.
+                </p>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X GET "https://user669-omniapi.hf.space/health"</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "status": "healthy",
+  "service": "KENOSIS API SERVICES"
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll to Top Button -->
+            <div class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block').querySelector('pre');
+            const text = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Show/hide scroll to top button
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.getElementById('scrollTop');
+            if (window.pageYOffset > 300) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Update active nav item on scroll
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.endpoint-section, #overview');
+            const navItems = document.querySelectorAll('.endpoint-nav-item');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 150;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Smooth scrolling for nav links
+        document.querySelectorAll('.endpoint-nav-item').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
