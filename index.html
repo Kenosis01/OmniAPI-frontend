@@ -853,6 +853,7 @@
                 <li><a href="#home">Home</a></li>
                 <li><a href="playground.html">Playground</a></li>
                 <li><a href="docs.html">Docs</a></li>
+                <li><a href="status.html">Status</a></li>
                 <li><a href="/docs" target="_blank">API Reference</a></li>
                 <li><a href="https://ko-fi.com/imkenosis" target="_blank">Donate</a></li>
             </ul>
@@ -985,6 +986,7 @@
             <div class="footer-links">
                 <a href="docs.html">Documentation</a>
                 <a href="playground.html">Playground</a>
+                <a href="status.html">Status</a>
                 <a href="/docs" target="_blank">API Reference</a>
                 <a href="https://ko-fi.com/imkenosis" target="_blank">Donate</a>
             </div>
@@ -1143,15 +1145,36 @@
             const isNumberOnly = typeof targetValue === 'number';
             const target = isNumberOnly ? targetValue : parseInt(targetValue);
             const current = parseInt(element.textContent) || 0;
+            
+            // Prevent negative numbers and ensure target is positive
+            if (target <= 0 || current < 0) {
+                element.textContent = isNumberOnly ? Math.max(target, 1) : Math.max(target, 1) + '+';
+                return;
+            }
+            
             const increment = target > current ? 1 : -1;
             const duration = 1000; // 1 second
             const steps = Math.abs(target - current);
-            const stepDuration = duration / steps;
+            
+            if (steps === 0) {
+                element.textContent = isNumberOnly ? target : target + '+';
+                return;
+            }
+            
+            const stepDuration = Math.max(duration / steps, 10); // Minimum 10ms per step
             
             let currentValue = current;
             
             const timer = setInterval(() => {
                 currentValue += increment;
+                
+                // Ensure we don't go below 1 or above target
+                if (increment > 0) {
+                    currentValue = Math.min(currentValue, target);
+                } else {
+                    currentValue = Math.max(currentValue, target);
+                }
+                
                 element.textContent = isNumberOnly ? currentValue : currentValue + '+';
                 
                 if (currentValue === target) {
