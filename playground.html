@@ -351,6 +351,80 @@
                 border-radius: 8px;
                 cursor: pointer;
             }
+
+            .segmented-bar {
+                height: 35px;
+            }
+
+            .bar-controls {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .bar-control-btn {
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 16px;
+            }
+            
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .playground-title {
+                font-size: 2.5rem;
+            }
+
+            .segmented-bar {
+                height: 30px;
+            }
+
+            .segment.internal-bars .mini-bar {
+                width: 2px;
+            }
+
+            .language-tabs {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .language-tab {
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                width: 95%;
+                padding: 12px 20px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+
+            .playground-title {
+                font-size: 2rem;
+            }
+
+            .input-panel, .output-panel {
+                padding: 16px;
+            }
+
+            .segmented-bar {
+                height: 25px;
+            }
+
+            .bar-controls {
+                justify-content: center;
+            }
         }
 
         .mobile-menu-btn {
@@ -368,6 +442,148 @@
         .audio-result {
             width: 100%;
             margin-top: 16px;
+        }
+
+        /* Segmented Bar Styles */
+        .segmented-bar-container {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .segmented-bar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .segmented-bar-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .segmented-bar {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .segment {
+            flex: 1;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .segment:last-child {
+            border-right: none;
+        }
+
+        .segment:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Segment visual variations */
+        .segment.height-variation {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .segment.height-variation .segment-bar {
+            width: 80%;
+            background: linear-gradient(to top, #4CAF50, #81C784);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.3s ease;
+            min-height: 2px;
+        }
+
+        .segment.density-variation {
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 4px 4px;
+        }
+
+        .segment.opacity-variation {
+            background: rgba(100, 200, 255, 0.2);
+        }
+
+        .segment.internal-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-evenly;
+            padding: 2px;
+        }
+
+        .segment.internal-bars .mini-bar {
+            width: 3px;
+            background: linear-gradient(to top, #2196F3, #64B5F6);
+            border-radius: 1px;
+            min-height: 2px;
+            transition: height 0.3s ease;
+        }
+
+        .bar-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .bar-control-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .bar-control-btn.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .bar-control-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
+        .segment-tooltip {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+
+        .segment:hover .segment-tooltip {
+            opacity: 1;
         }
 
         /* Code Snippet Panel */
@@ -656,6 +872,24 @@
                         <button class="btn btn-primary" onclick="testTranscription()" id="transcribe-btn" disabled>Transcribe Audio</button>
                     </div>
 
+                    <!-- Segmented Bar Panel -->
+                    <div class="segmented-bar-container" id="segmented-bar-container">
+                        <div class="segmented-bar-header">
+                            <div class="segmented-bar-title">
+                                <span>📊</span> API Request Timeline
+                            </div>
+                        </div>
+                        <div class="bar-controls">
+                            <div class="bar-control-btn active" onclick="switchBarStyle('height')">Height</div>
+                            <div class="bar-control-btn" onclick="switchBarStyle('density')">Density</div>
+                            <div class="bar-control-btn" onclick="switchBarStyle('opacity')">Opacity</div>
+                            <div class="bar-control-btn" onclick="switchBarStyle('internal')">Internal Bars</div>
+                        </div>
+                        <div class="segmented-bar" id="segmented-bar">
+                            <!-- Segments will be generated by JavaScript -->
+                        </div>
+                    </div>
+
                     <!-- Code Snippet Panel -->
                     <div class="code-snippet-panel" id="code-snippet-panel">
                         <div class="code-snippet-header">
@@ -691,11 +925,91 @@
 
     <script>
         let currentEndpoint = 'chat';
+        let currentBarStyle = 'height';
+        let requestHistory = [];
+        let segmentData = [];
+
+        // Initialize segmented bar data (50 segments representing time intervals)
+        function initializeSegmentedBar() {
+            segmentData = Array(50).fill(0).map(() => Math.floor(Math.random() * 20));
+            renderSegmentedBar();
+        }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('open');
         }
+
+        // Segmented Bar Functions
+        function switchBarStyle(style) {
+            currentBarStyle = style;
+            
+            // Update active button
+            document.querySelectorAll('.bar-control-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderSegmentedBar();
+        }
+
+        function renderSegmentedBar() {
+            const segmentedBar = document.getElementById('segmented-bar');
+            segmentedBar.innerHTML = '';
+            
+            segmentData.forEach((value, index) => {
+                const segment = document.createElement('div');
+                segment.className = `segment ${currentBarStyle}-variation`;
+                
+                // Add tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'segment-tooltip';
+                const timeAgo = `${Math.floor((49 - index) * 2)} min ago`;
+                tooltip.textContent = `${value} requests (${timeAgo})`;
+                segment.appendChild(tooltip);
+                
+                switch(currentBarStyle) {
+                    case 'height':
+                        const segmentBar = document.createElement('div');
+                        segmentBar.className = 'segment-bar';
+                        segmentBar.style.height = `${Math.max(2, (value / 20) * 100)}%`;
+                        segment.appendChild(segmentBar);
+                        break;
+                        
+                    case 'density':
+                        const density = Math.max(0.1, value / 20);
+                        segment.style.backgroundSize = `${4 / density}px ${4 / density}px`;
+                        break;
+                        
+                    case 'opacity':
+                        const opacity = Math.max(0.1, value / 20);
+                        segment.style.background = `rgba(100, 200, 255, ${opacity})`;
+                        break;
+                        
+                    case 'internal':
+                        const numBars = Math.min(5, Math.max(1, Math.ceil(value / 4)));
+                        for (let i = 0; i < numBars; i++) {
+                            const miniBar = document.createElement('div');
+                            miniBar.className = 'mini-bar';
+                            miniBar.style.height = `${Math.max(10, (value / 20) * 80)}%`;
+                            segment.appendChild(miniBar);
+                        }
+                        break;
+                }
+                
+                segmentedBar.appendChild(segment);
+            });
+        }
+
+        function updateSegmentedBar() {
+            // Simulate new request data
+            segmentData.shift(); // Remove oldest
+            segmentData.push(Math.floor(Math.random() * 20)); // Add new
+            renderSegmentedBar();
+        }
+
+        // Update segmented bar every 5 seconds
+        setInterval(updateSegmentedBar, 5000);
 
         function selectEndpoint(endpoint) {
             // Update active state
@@ -1072,43 +1386,72 @@
             const endpoint = currentEndpoint;
             let data = {};
             
-            switch(endpoint) {
-                case 'chat':
-                    data = {
-                        model: document.getElementById('chat-model').value,
-                        prompt: document.getElementById('chat-prompt').value
-                    };
-                    break;
-                case 'image':
-                    data = {
-                        model: document.getElementById('image-model').value,
-                        prompt: document.getElementById('image-prompt').value,
-                        size: document.getElementById('image-size').value
-                    };
-                    break;
-                case 'search':
-                    data = {
-                        query: document.getElementById('search-query').value,
-                        max_results: parseInt(document.getElementById('search-max').value),
-                        region: document.getElementById('search-region').value
-                    };
-                    break;
-                case 'tts':
-                    data = {
-                        provider: document.getElementById('tts-provider').value,
-                        voice: document.getElementById('tts-voice').value,
-                        text: document.getElementById('tts-text').value
-                    };
-                    break;
-                case 'transcribe':
-                    data = {
-                        file: 'audio_file.mp3'
-                    };
-                    break;
+            try {
+                switch(endpoint) {
+                    case 'chat':
+                        const chatModel = document.getElementById('chat-model');
+                        const chatPrompt = document.getElementById('chat-prompt');
+                        if (chatModel && chatPrompt) {
+                            data = {
+                                model: chatModel.value || 'gpt-4o',
+                                prompt: chatPrompt.value || 'Hello! How are you today?'
+                            };
+                        }
+                        break;
+                    case 'image':
+                        const imageModel = document.getElementById('image-model');
+                        const imagePrompt = document.getElementById('image-prompt');
+                        const imageSize = document.getElementById('image-size');
+                        if (imageModel && imagePrompt && imageSize) {
+                            data = {
+                                model: imageModel.value || 'flux.1-dev',
+                                prompt: imagePrompt.value || 'A beautiful sunset over mountains',
+                                size: imageSize.value || '1024x1024'
+                            };
+                        }
+                        break;
+                    case 'search':
+                        const searchQuery = document.getElementById('search-query');
+                        const searchMax = document.getElementById('search-max');
+                        const searchRegion = document.getElementById('search-region');
+                        if (searchQuery && searchMax && searchRegion) {
+                            data = {
+                                query: searchQuery.value || 'latest AI developments',
+                                max_results: parseInt(searchMax.value) || 5,
+                                region: searchRegion.value || 'us'
+                            };
+                        }
+                        break;
+                    case 'tts':
+                        const ttsProvider = document.getElementById('tts-provider');
+                        const ttsVoice = document.getElementById('tts-voice');
+                        const ttsText = document.getElementById('tts-text');
+                        if (ttsProvider && ttsVoice && ttsText) {
+                            data = {
+                                provider: ttsProvider.value || 'GesseritTTS',
+                                voice: ttsVoice.value || 'Emma',
+                                text: ttsText.value || 'Hello! This is a test.'
+                            };
+                        }
+                        break;
+                    case 'transcribe':
+                        data = {
+                            file: 'audio_file.mp3'
+                        };
+                        break;
+                }
+                
+                currentEndpointData = { endpoint, data };
+                generateCodeSnippet();
+            } catch (error) {
+                console.error('Error updating code snippet:', error);
+                // Fallback to basic data
+                currentEndpointData = { 
+                    endpoint, 
+                    data: { message: 'Form data not available yet' } 
+                };
+                generateCodeSnippet();
             }
-            
-            currentEndpointData = { endpoint, data };
-            generateCodeSnippet();
         }
 
         function generateCodeSnippet() {
@@ -1337,9 +1680,14 @@ axios.post('${baseUrl}${endpointMap[endpoint]}', data, {
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            initializeSegmentedBar();
             selectEndpoint('chat');
             addCodeUpdateListeners();
-            updateCodeSnippet();
+            
+            // Initialize code snippet after a short delay to ensure form elements are ready
+            setTimeout(() => {
+                updateCodeSnippet();
+            }, 100);
         });
     </script>
 </body>
