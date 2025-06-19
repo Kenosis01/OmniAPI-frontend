@@ -59,10 +59,64 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000000;
+            background: linear-gradient(-45deg, #0a0a0a, #1a1a1a, #0f0f0f, #151515);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #ffffff;
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Gradient */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Particle System */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(100, 200, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+            box-shadow: 0 0 6px rgba(100, 200, 255, 0.2);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* Accent Color Theme */
+        :root {
+            --accent-color: #64c8ff;
+            --accent-glow: rgba(100, 200, 255, 0.3);
         }
 
         /* Glass Effect Utilities */
@@ -106,6 +160,34 @@
             font-weight: 800;
             color: #ffffff;
             letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .logo:hover {
+            color: var(--accent-color);
+            text-shadow: 0 0 20px var(--accent-glow);
+            transform: scale(1.05);
+        }
+
+        .logo::after {
+            content: 'Professional AI Services';
+            position: absolute;
+            top: 100%;
+            left: 0;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--accent-color);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .logo:hover::after {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .nav-links {
@@ -125,9 +207,10 @@
         }
 
         .nav-links a:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent-color);
+            background: rgba(100, 200, 255, 0.1);
             transform: translateY(-2px);
+            border: 1px solid var(--accent-color);
         }
 
         /* Hero Section */
@@ -162,10 +245,34 @@
             font-weight: 900;
             margin-bottom: 24px;
             letter-spacing: -0.03em;
-            background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.7) 100%);
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-color) 50%, rgba(255, 255, 255, 0.7) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .hero-content h1:hover {
+            transform: scale(1.02);
+            filter: drop-shadow(0 0 30px var(--accent-glow));
+        }
+
+        .hero-content h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .hero-content h1:hover::after {
+            width: 100px;
         }
 
         .hero-subtitle {
@@ -224,15 +331,45 @@
         }
 
         .btn-primary {
-            background: #ffffff;
+            background: var(--accent-color);
             color: #000000;
-            border-color: #ffffff;
+            border-color: var(--accent-color);
+            position: relative;
         }
 
         .btn-primary:hover {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(100, 200, 255, 0.9);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        /* Dynamic Onboarding Indicator */
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
         }
 
         .btn-secondary {
@@ -242,8 +379,9 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #ffffff;
+            background: rgba(100, 200, 255, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
             transform: translateY(-2px);
         }
 
@@ -304,7 +442,8 @@
 
         .feature-card:hover {
             transform: translateY(-12px);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: var(--accent-color);
+            box-shadow: 0 20px 40px rgba(100, 200, 255, 0.1);
         }
 
         .feature-icon {
@@ -312,6 +451,61 @@
             margin-bottom: 24px;
             display: block;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 20px var(--accent-glow));
+        }
+
+        /* Service Icons with Visual Representation */
+        .feature-icon.chat::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .feature-icon.image::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .feature-icon.search::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: #4ecdc4;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .feature-icon.tts::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: #45b7d1;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
 
         .feature-title {
@@ -550,6 +744,9 @@
     </style>
 </head>
 <body>
+    <!-- Particle System -->
+    <div class="particles" id="particles"></div>
+
     <!-- Navigation -->
     <nav class="glass">
         <div class="nav-container">
@@ -592,31 +789,38 @@
         </p>
         <div class="features-grid">
             <div class="feature-card glass">
-                <span class="feature-icon">💬</span>
+                <span class="feature-icon chat">💬</span>
                 <h3 class="feature-title">Chat Completions</h3>
                 <p class="feature-description">
                     Advanced conversational AI with multiple premium models including GPT-4, Qwen, and LLaMA for intelligent dialogue
                 </p>
             </div>
             <div class="feature-card glass">
-                <span class="feature-icon">🎨</span>
+                <span class="feature-icon image">🎨</span>
                 <h3 class="feature-title">Image Generation</h3>
                 <p class="feature-description">
                     Create stunning visuals from text descriptions using state-of-the-art image generation models with multiple size options
                 </p>
             </div>
             <div class="feature-card glass">
-                <span class="feature-icon">🔍</span>
+                <span class="feature-icon search">🔍</span>
                 <h3 class="feature-title">Web Search</h3>
                 <p class="feature-description">
                     Comprehensive web, image, and video search capabilities with intelligent URL scraping and content extraction
                 </p>
             </div>
             <div class="feature-card glass">
-                <span class="feature-icon">🎤</span>
+                <span class="feature-icon tts">🎤</span>
                 <h3 class="feature-title">Text-to-Speech</h3>
                 <p class="feature-description">
                     Convert text to natural-sounding speech with multiple TTS providers and voice options for diverse applications
+                </p>
+            </div>
+            <div class="feature-card glass">
+                <span class="feature-icon transcribe">🎙️</span>
+                <h3 class="feature-title">Audio Transcription</h3>
+                <p class="feature-description">
+                    Convert audio files to text with high accuracy AI transcription service supporting multiple audio formats
                 </p>
             </div>
         </div>
@@ -693,7 +897,60 @@
     </footer>
 
     <script>
-        // Scroll reveal animation
+        // Particle System
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random starting position
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                
+                // Random size variation
+                const size = Math.random() * 3 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Mouse interaction with particles
+        document.addEventListener('mousemove', (e) => {
+            const particles = document.querySelectorAll('.particle');
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            particles.forEach(particle => {
+                const rect = particle.getBoundingClientRect();
+                const particleX = rect.left + rect.width / 2;
+                const particleY = rect.top + rect.height / 2;
+                
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - particleX, 2) + Math.pow(mouseY - particleY, 2)
+                );
+                
+                if (distance < 100) {
+                    const force = (100 - distance) / 100;
+                    const angle = Math.atan2(particleY - mouseY, particleX - mouseX);
+                    const moveX = Math.cos(angle) * force * 20;
+                    const moveY = Math.sin(angle) * force * 20;
+                    
+                    particle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    particle.style.opacity = 0.8;
+                } else {
+                    particle.style.transform = 'translate(0, 0)';
+                    particle.style.opacity = 0.3;
+                }
+            });
+        });
+
+        // Scroll reveal animation with enhanced effects
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -703,6 +960,17 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('revealed');
+                    
+                    // Add staggered animation for feature cards
+                    if (entry.target.classList.contains('features')) {
+                        const cards = entry.target.querySelectorAll('.feature-card');
+                        cards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.style.transform = 'translateY(0)';
+                                card.style.opacity = '1';
+                            }, index * 100);
+                        });
+                    }
                 }
             });
         }, observerOptions);
@@ -725,14 +993,42 @@
             });
         });
 
-        // Navigation background on scroll
+        // Enhanced navigation background on scroll
         window.addEventListener('scroll', () => {
             const nav = document.querySelector('nav');
-            if (window.scrollY > 100) {
-                nav.style.background = 'rgba(0, 0, 0, 0.8)';
+            const scrolled = window.scrollY > 100;
+            
+            if (scrolled) {
+                nav.style.background = 'rgba(0, 0, 0, 0.9)';
+                nav.style.borderBottom = '1px solid rgba(100, 200, 255, 0.3)';
             } else {
                 nav.style.background = 'rgba(255, 255, 255, 0.05)';
+                nav.style.borderBottom = 'none';
             }
+        });
+
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            
+            // Add initial animation delay to feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach(card => {
+                card.style.transform = 'translateY(50px)';
+                card.style.opacity = '0';
+                card.style.transition = 'all 0.6s ease';
+            });
+        });
+
+        // Add interactive glow effect to buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 0 30px rgba(100, 200, 255, 0.4)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '';
+            });
         });
     </script>
 </body>
