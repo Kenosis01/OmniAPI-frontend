@@ -112,6 +112,40 @@
             color: #ffffff;
         }
 
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-close-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-close-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
         .endpoint-list {
             display: flex;
             flex-direction: column;
@@ -322,9 +356,19 @@
         /* Responsive */
         @media (max-width: 1024px) {
             .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 320px;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                width: 300px;
+                z-index: 1000;
+                background: rgba(0, 0, 0, 0.95);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 0;
             }
 
             .sidebar.open {
@@ -342,17 +386,38 @@
             }
 
             .mobile-menu-btn {
-                display: block;
+                display: flex;
+                align-items: center;
+                gap: 8px;
                 position: fixed;
-                top: 120px;
+                top: 100px;
                 left: 20px;
-                z-index: 1001;
-                background: rgba(255, 255, 255, 0.1);
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                z-index: 1002;
+                background: rgba(255, 255, 255, 0.15);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.3);
                 color: #ffffff;
-                padding: 12px;
-                border-radius: 8px;
+                padding: 12px 16px;
+                border-radius: 12px;
                 cursor: pointer;
+                font-size: 14px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+
+            .mobile-menu-btn:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateY(-2px);
+            }
+
+            .hamburger-icon {
+                transition: transform 0.3s ease;
+                display: inline-block;
+            }
+
+            .mobile-menu-btn.active .hamburger-icon {
+                transform: rotate(90deg);
             }
 
             .api-status-grid {
@@ -406,19 +471,36 @@
             }
 
             .sidebar {
-                width: 280px;
+                width: 300px;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .sidebar-content {
+                padding: 24px 20px;
+                height: auto;
+                min-height: 100vh;
+                padding-top: 120px; /* Account for nav height */
             }
 
             .endpoint-item {
-                padding: 12px;
+                padding: 14px 12px;
+                margin-bottom: 8px;
             }
 
             .endpoint-name {
-                font-size: 14px;
+                font-size: 15px;
+                font-weight: 600;
             }
 
             .endpoint-desc {
-                font-size: 12px;
+                font-size: 13px;
+                margin-top: 4px;
+            }
+
+            .endpoint-method {
+                font-size: 11px;
+                padding: 3px 6px;
             }
         }
 
@@ -537,18 +619,27 @@
             display: none;
         }
 
+        /* Ensure mobile menu is always visible on small screens */
+        @media (max-width: 1024px) {
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+        }
+
         /* Mobile backdrop */
         .mobile-backdrop {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
             z-index: 999;
             opacity: 0;
             transition: opacity 0.3s ease;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
         }
 
         .mobile-backdrop.show {
@@ -817,8 +908,8 @@
     </nav>
 
     <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" onclick="toggleSidebar()">
-        <span>☰</span> Menu
+    <button class="mobile-menu-btn" onclick="toggleSidebar()" id="mobile-menu-btn">
+        <span class="hamburger-icon">☰</span> Menu
     </button>
 
     <!-- Mobile Backdrop -->
@@ -828,7 +919,10 @@
         <!-- Sidebar -->
         <div class="sidebar glass" id="sidebar">
             <div class="sidebar-content">
-                <h2>API Endpoints</h2>
+                <div class="sidebar-header">
+                    <h2>API Endpoints</h2>
+                    <button class="sidebar-close-btn" onclick="closeSidebar()">✕</button>
+                </div>
                 <div class="endpoint-list">
                     <div class="endpoint-item active" onclick="selectEndpoint('chat')">
                         <div class="endpoint-method">POST</div>
@@ -1045,17 +1139,31 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('mobile-backdrop');
+            const menuBtn = document.getElementById('mobile-menu-btn');
             
+            console.log('Toggling sidebar'); // Debug log
             sidebar.classList.toggle('open');
             backdrop.classList.toggle('show');
+            menuBtn.classList.toggle('active');
+            
+            // Prevent body scroll when sidebar is open
+            if (sidebar.classList.contains('open')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         }
 
         function closeSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('mobile-backdrop');
+            const menuBtn = document.getElementById('mobile-menu-btn');
             
+            console.log('Closing sidebar'); // Debug log
             sidebar.classList.remove('open');
             backdrop.classList.remove('show');
+            menuBtn.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         // API Status Functions
