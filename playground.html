@@ -590,6 +590,34 @@
                 margin-top: 12px;
                 width: 100%;
             }
+
+            .image-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .image-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .btn-small {
+                flex: 1;
+                text-align: center;
+                padding: 8px 4px;
+                font-size: 11px;
+            }
+
+            .image-url {
+                font-size: 10px;
+                padding: 6px;
+            }
+
+            .json-response {
+                font-size: 11px;
+                max-height: 150px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -656,8 +684,147 @@
         /* Image Display */
         .image-result {
             max-width: 100%;
+            width: 100%;
+            height: auto;
             border-radius: 8px;
             margin-top: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .image-result:hover {
+            transform: scale(1.02);
+        }
+
+        .image-container {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .image-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .image-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .image-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .image-url {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 4px;
+            word-break: break-all;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .response-section {
+            margin-bottom: 20px;
+        }
+
+        .response-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .json-response {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Modal for full-size image */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            cursor: pointer;
+        }
+
+        .image-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal img {
+            max-width: 90vw;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Audio Player */
@@ -914,6 +1081,12 @@
 
     <!-- Mobile Backdrop -->
     <div class="mobile-backdrop" id="mobile-backdrop" onclick="closeSidebar()"></div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal" onclick="closeImageModal()">
+        <button class="image-modal-close" onclick="closeImageModal()">✕</button>
+        <img id="modal-image" src="" alt="Full size image" />
+    </div>
 
     <div class="main-container">
         <!-- Sidebar -->
@@ -1276,6 +1449,81 @@
         // Auto-refresh status every 2 minutes
         setInterval(checkAllAPIStatus, 120000);
 
+        // Image handling functions
+        function openImageModal(imageUrl) {
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            modalImage.src = imageUrl;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show temporary feedback
+                const originalText = event.target.textContent;
+                event.target.textContent = '✅ Copied!';
+                event.target.style.background = 'rgba(76, 175, 80, 0.3)';
+                
+                setTimeout(() => {
+                    event.target.textContent = originalText;
+                    event.target.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = event.target.textContent;
+                event.target.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    event.target.textContent = originalText;
+                }, 2000);
+            });
+        }
+
+        function downloadImage(imageUrl, filename = 'generated-image') {
+            // Clean filename
+            const cleanFilename = filename.replace(/[^a-z0-9]/gi, '-').toLowerCase();
+            
+            fetch(imageUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${cleanFilename}-${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(err => {
+                    console.error('Download failed:', err);
+                    // Fallback: open in new tab
+                    window.open(imageUrl, '_blank');
+                });
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+
         function selectEndpoint(endpoint) {
             // Update active state
             document.querySelectorAll('.endpoint-item').forEach(item => {
@@ -1448,9 +1696,36 @@
                 const data = await response.json();
                 
                 if (response.ok && data.data && data.data[0] && data.data[0].url) {
+                    const imageUrl = data.data[0].url;
+                    const imageId = `img-${Date.now()}`;
+                    
                     document.getElementById('output').innerHTML = `
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
-                        <img src="${data.data[0].url}" alt="Generated image" class="image-result" />
+                        <div class="response-section">
+                            <div class="response-section-title">
+                                <span>✅</span> Image Generated Successfully
+                            </div>
+                            <div class="image-container">
+                                <div class="image-info">
+                                    <div class="image-title">🎨 Generated Image</div>
+                                    <div class="image-actions">
+                                        <a href="${imageUrl}" target="_blank" class="btn-small">🔗 Open Full Size</a>
+                                        <button onclick="downloadImage('${imageUrl}', '${prompt.substring(0, 30)}')" class="btn-small">💾 Download</button>
+                                        <button onclick="copyToClipboard('${imageUrl}')" class="btn-small">📋 Copy URL</button>
+                                    </div>
+                                </div>
+                                <div class="image-url" title="Click to copy URL" onclick="copyToClipboard('${imageUrl}')">
+                                    ${imageUrl}
+                                </div>
+                                <img src="${imageUrl}" alt="Generated image: ${prompt}" class="image-result" id="${imageId}" onclick="openImageModal('${imageUrl}')" loading="lazy" />
+                            </div>
+                        </div>
+                        
+                        <div class="response-section">
+                            <div class="response-section-title">
+                                <span>📄</span> Full API Response
+                            </div>
+                            <div class="json-response">${JSON.stringify(data, null, 2)}</div>
+                        </div>
                     `;
                 } else {
                     showError(data.error || 'Image generation failed');
