@@ -694,21 +694,55 @@
         /* Image Display */
         .image-result {
             max-width: 400px;
-            width: 100%;
+            width: auto;
             height: auto;
             border-radius: 8px;
-            margin-top: 16px;
+            margin: 16px auto;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: transform 0.3s ease;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
+            background: rgba(255, 255, 255, 0.05);
+            min-height: 100px;
         }
 
         .image-result:hover {
             transform: scale(1.05);
+        }
+
+        /* Loading state for images */
+        .image-result[src=""], .image-result:not([src]) {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .image-result[src=""]:before, .image-result:not([src]):before {
+            content: "🖼️ Loading image...";
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            position: absolute;
+        }
+
+        /* Image error state */
+        .image-error {
+            background: rgba(244, 67, 54, 0.1);
+            border: 2px dashed #f44336;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f44336;
+            font-size: 14px;
+            text-align: center;
+            border-radius: 8px;
+            margin: 16px auto;
+            max-width: 400px;
         }
 
         .image-container {
@@ -1158,14 +1192,7 @@
                         <div class="form-group">
                             <label class="form-label">Model</label>
                             <select class="form-select" id="chat-model">
-                                <option value="gpt-4o">gpt-4o</option>
-                                <option value="gpt-4o-mini">gpt-4o-mini</option>
-                                <option value="qwen-3-235b">qwen-3-235b</option>
-                                <option value="llama-4-maverick">llama-4-maverick</option>
-                                <option value="llama-4-scout">llama-4-scout</option>
-                                <option value="gpt-4.1">gpt-4.1</option>
-                                <option value="deepseek-r1">deepseek-r1</option>
-                                <option value="qwq-32b">qwq-32b</option>
+                                <option value="">Loading models...</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -1462,6 +1489,95 @@
         // Auto-refresh status every 2 minutes
         setInterval(checkAllAPIStatus, 120000);
 
+        // Load chat models dynamically
+        async function loadChatModels() {
+            try {
+                const response = await fetch('https://user669-omniapi.hf.space/models');
+                const data = await response.json();
+                
+                const chatModelSelect = document.getElementById('chat-model');
+                chatModelSelect.innerHTML = '';
+                
+                if (data.chat_models) {
+                    // Add ExoML models group
+                    if (data.chat_models.exoml_models && data.chat_models.exoml_models.length > 0) {
+                        const exomlGroup = document.createElement('optgroup');
+                        exomlGroup.label = 'ExoML Models';
+                        
+                        data.chat_models.exoml_models.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model;
+                            option.textContent = model;
+                            exomlGroup.appendChild(option);
+                        });
+                        
+                        chatModelSelect.appendChild(exomlGroup);
+                    }
+                    
+                    // Add Grok models group
+                    if (data.chat_models.grok_models && data.chat_models.grok_models.length > 0) {
+                        const grokGroup = document.createElement('optgroup');
+                        grokGroup.label = 'Grok Models';
+                        
+                        data.chat_models.grok_models.forEach(model => {
+                            const option = document.createElement('option');
+                            option.value = model;
+                            option.textContent = model;
+                            grokGroup.appendChild(option);
+                        });
+                        
+                        chatModelSelect.appendChild(grokGroup);
+                    }
+                    
+                    // Set default selection (first available model)
+                    if (data.chat_models.all_models && data.chat_models.all_models.length > 0) {
+                        chatModelSelect.value = data.chat_models.all_models[0];
+                    }
+                } else {
+                    // Fallback to basic models if API fails
+                    const fallbackModels = ['gpt-4o', 'gpt-4o-mini', 'qwen-3-235b'];
+                    fallbackModels.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        chatModelSelect.appendChild(option);
+                    });
+                    chatModelSelect.value = 'gpt-4o';
+                }
+                
+                console.log('Chat models loaded successfully');
+                
+            } catch (error) {
+                console.error('Failed to load chat models:', error);
+                
+                // Fallback to hardcoded models if API fails
+                const chatModelSelect = document.getElementById('chat-model');
+                chatModelSelect.innerHTML = '';
+                
+                const fallbackModels = [
+                    { group: 'ExoML Models', models: ['gpt-4o', 'gpt-4o-mini', 'qwen-3-235b', 'llama-4-maverick', 'llama-4-scout', 'gpt-4.1', 'deepseek-r1', 'qwq-32b'] },
+                    { group: 'Grok Models', models: ['grok-3', 'grok-3-fast', 'grok-3-mini'] }
+                ];
+                
+                fallbackModels.forEach(group => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = group.group;
+                    
+                    group.models.forEach(model => {
+                        const option = document.createElement('option');
+                        option.value = model;
+                        option.textContent = model;
+                        optgroup.appendChild(option);
+                    });
+                    
+                    chatModelSelect.appendChild(optgroup);
+                });
+                
+                chatModelSelect.value = 'gpt-4o';
+                console.log('Using fallback chat models');
+            }
+        }
+
         // Image handling functions
         function openImageModal(imageUrl) {
             const modal = document.getElementById('image-modal');
@@ -1528,6 +1644,38 @@
                     // Fallback: open in new tab
                     window.open(imageUrl, '_blank');
                 });
+        }
+
+        // Image error and load handling
+        function handleImageError(img) {
+            console.error('Image failed to load:', img.src);
+            img.style.border = '2px dashed #f44336';
+            img.style.background = 'rgba(244, 67, 54, 0.1)';
+            img.style.minHeight = '200px';
+            img.style.display = 'flex';
+            img.style.alignItems = 'center';
+            img.style.justifyContent = 'center';
+            img.alt = '❌ Failed to load image. Click "Open Full Size" to try viewing directly.';
+            
+            // Create error message
+            const errorDiv = document.createElement('div');
+            errorDiv.innerHTML = '❌ Image failed to load<br><small>Try clicking "Open Full Size"</small>';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.style.color = '#f44336';
+            errorDiv.style.fontSize = '14px';
+            
+            // Replace image with error message
+            img.style.display = 'none';
+            img.parentNode.insertBefore(errorDiv, img.nextSibling);
+        }
+
+        function handleImageLoad(img) {
+            console.log('Image loaded successfully:', img.src);
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                img.style.opacity = '1';
+            }, 100);
         }
 
         // Close modal with Escape key
@@ -1706,42 +1854,72 @@
                     })
                 });
 
+                console.log('Response status:', response.status);
                 const data = await response.json();
+                console.log('Image generation response:', data);
                 
-                if (response.ok && data.data && data.data[0] && data.data[0].url) {
-                    const imageUrl = data.data[0].url;
-                    const imageId = `img-${Date.now()}`;
+                if (response.ok) {
+                    // Check different possible response formats
+                    let imageUrl = null;
                     
-                    document.getElementById('output').innerHTML = `
-                        <div class="response-section">
-                            <div class="response-section-title">
-                                <span>✅</span> Image Generated Successfully
-                            </div>
-                            <div class="image-container">
-                                <div class="image-info">
-                                    <div class="image-title">🎨 Generated Image</div>
-                                    <div class="image-actions">
-                                        <a href="${imageUrl}" target="_blank" class="btn-small">🔗 Open Full Size</a>
-                                        <button onclick="downloadImage('${imageUrl}', '${prompt.substring(0, 30)}')" class="btn-small">💾 Download</button>
-                                        <button onclick="copyToClipboard('${imageUrl}')" class="btn-small">📋 Copy URL</button>
-                                    </div>
+                    if (data.data && data.data[0] && data.data[0].url) {
+                        imageUrl = data.data[0].url;
+                    } else if (data.url) {
+                        imageUrl = data.url;
+                    } else if (data.image_url) {
+                        imageUrl = data.image_url;
+                    } else if (data.images && data.images[0]) {
+                        imageUrl = data.images[0];
+                    }
+                    
+                    if (imageUrl) {
+                        console.log('Image URL found:', imageUrl);
+                        const imageId = `img-${Date.now()}`;
+                        
+                        document.getElementById('output').innerHTML = `
+                            <div class="response-section">
+                                <div class="response-section-title">
+                                    <span>✅</span> Image Generated Successfully
                                 </div>
-                                <div class="image-url" title="Click to copy URL" onclick="copyToClipboard('${imageUrl}')">
+                                
+                                <div class="json-response" style="margin-bottom: 20px;">
+                                    ${JSON.stringify(data, null, 2)}
+                                </div>
+                                
+                                <div class="image-url" title="Click to copy URL" onclick="copyToClipboard('${imageUrl}')" style="margin-bottom: 20px;">
+                                    <strong>Image URL:</strong><br>
                                     ${imageUrl}
                                 </div>
-                                <img src="${imageUrl}" alt="Generated image: ${prompt}" class="image-result" id="${imageId}" onclick="openImageModal('${imageUrl}')" loading="lazy" />
+                                
+                                <div class="image-container">
+                                    <div class="image-info">
+                                        <div class="image-title">🎨 Generated Image</div>
+                                        <div class="image-actions">
+                                            <a href="${imageUrl}" target="_blank" class="btn-small">🔗 Open Full Size</a>
+                                            <button onclick="downloadImage('${imageUrl}', '${prompt.substring(0, 30)}')" class="btn-small">💾 Download</button>
+                                            <button onclick="copyToClipboard('${imageUrl}')" class="btn-small">📋 Copy URL</button>
+                                        </div>
+                                    </div>
+                                    <img src="${imageUrl}" alt="Generated image: ${prompt}" class="image-result" id="${imageId}" onclick="openImageModal('${imageUrl}')" loading="lazy" onerror="handleImageError(this)" onload="handleImageLoad(this)" />
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="response-section">
-                            <div class="response-section-title">
-                                <span>📄</span> Full API Response
+                        `;
+                    } else {
+                        console.error('No image URL found in response:', data);
+                        document.getElementById('output').innerHTML = `
+                            <div class="error">
+                                <strong>Image Generation Issue:</strong><br>
+                                API responded successfully but no image URL found.<br>
+                                <details style="margin-top: 10px;">
+                                    <summary>Response Details</summary>
+                                    <pre style="font-size: 12px; margin-top: 8px;">${JSON.stringify(data, null, 2)}</pre>
+                                </details>
                             </div>
-                            <div class="json-response">${JSON.stringify(data, null, 2)}</div>
-                        </div>
-                    `;
+                        `;
+                    }
                 } else {
-                    showError(data.error || 'Image generation failed');
+                    console.error('API error:', response.status, data);
+                    showError(data.error || data.detail || `API Error: ${response.status}`);
                 }
             } catch (error) {
                 showError(error.message);
@@ -1945,8 +2123,12 @@
                         const chatModel = document.getElementById('chat-model');
                         const chatPrompt = document.getElementById('chat-prompt');
                         if (chatModel && chatPrompt) {
+                            // Don't use empty or loading values
+                            const modelValue = chatModel.value && chatModel.value !== '' && !chatModel.value.includes('Loading') 
+                                ? chatModel.value 
+                                : 'gpt-4o';
                             data = {
-                                model: chatModel.value || 'gpt-4o',
+                                model: modelValue,
                                 prompt: chatPrompt.value || 'Hello! How are you today?'
                             };
                         }
@@ -2234,13 +2416,14 @@ axios.post('${baseUrl}${endpointMap[endpoint]}', data, {
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             initializeAPIStatus();
+            loadChatModels(); // Load chat models dynamically
             selectEndpoint('chat');
             addCodeUpdateListeners();
             
             // Initialize code snippet after a short delay to ensure form elements are ready
             setTimeout(() => {
                 updateCodeSnippet();
-            }, 100);
+            }, 200); // Increased delay to allow models to load
         });
     </script>
 </body>
