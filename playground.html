@@ -1499,19 +1499,19 @@
                 chatModelSelect.innerHTML = '';
                 
                 if (data.chat_models) {
-                    // Add ExoML models group
+                    // Add Premium models group (non-Grok models)
                     if (data.chat_models.exoml_models && data.chat_models.exoml_models.length > 0) {
-                        const exomlGroup = document.createElement('optgroup');
-                        exomlGroup.label = 'ExoML Models';
+                        const premiumGroup = document.createElement('optgroup');
+                        premiumGroup.label = 'Premium Models';
                         
                         data.chat_models.exoml_models.forEach(model => {
                             const option = document.createElement('option');
                             option.value = model;
                             option.textContent = model;
-                            exomlGroup.appendChild(option);
+                            premiumGroup.appendChild(option);
                         });
                         
-                        chatModelSelect.appendChild(exomlGroup);
+                        chatModelSelect.appendChild(premiumGroup);
                     }
                     
                     // Add Grok models group
@@ -1555,7 +1555,7 @@
                 chatModelSelect.innerHTML = '';
                 
                 const fallbackModels = [
-                    { group: 'ExoML Models', models: ['gpt-4o', 'gpt-4o-mini', 'qwen-3-235b', 'llama-4-maverick', 'llama-4-scout', 'gpt-4.1', 'deepseek-r1', 'qwq-32b'] },
+                    { group: 'Premium Models', models: ['gpt-4o', 'gpt-4o-mini', 'qwen-3-235b', 'llama-4-maverick', 'llama-4-scout', 'gpt-4.1', 'deepseek-r1', 'qwq-32b'] },
                     { group: 'Grok Models', models: ['grok-3', 'grok-3-fast', 'grok-3-mini'] }
                 ];
                 
