@@ -324,6 +324,7 @@
             .sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
+                width: 300px;
             }
 
             .sidebar.open {
@@ -332,10 +333,12 @@
 
             .content {
                 margin-left: 0;
+                padding: 20px 15px;
             }
 
             .playground-interface {
                 grid-template-columns: 1fr;
+                gap: 20px;
             }
 
             .mobile-menu-btn {
@@ -352,41 +355,31 @@
                 cursor: pointer;
             }
 
-            .segmented-bar {
-                height: 35px;
-            }
-
-            .bar-controls {
-                flex-wrap: wrap;
-                gap: 8px;
-            }
-
-            .bar-control-btn {
-                font-size: 11px;
-                padding: 5px 10px;
+            .api-status-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 10px;
             }
         }
 
         @media (max-width: 768px) {
             .nav-links {
-                gap: 16px;
+                display: none;
             }
             
-            .nav-links a {
-                padding: 6px 12px;
-                font-size: 14px;
+            .nav-container {
+                justify-content: center;
             }
 
             .playground-title {
                 font-size: 2.5rem;
             }
 
-            .segmented-bar {
-                height: 30px;
+            .playground-subtitle {
+                font-size: 1.125rem;
             }
 
-            .segment.internal-bars .mini-bar {
-                width: 2px;
+            .input-panel, .output-panel {
+                padding: 20px 16px;
             }
 
             .language-tabs {
@@ -398,37 +391,175 @@
                 font-size: 11px;
                 padding: 5px 10px;
             }
+
+            .api-status-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .status-item {
+                padding: 10px;
+            }
+
+            .status-name {
+                font-size: 13px;
+            }
+
+            .sidebar {
+                width: 280px;
+            }
+
+            .endpoint-item {
+                padding: 12px;
+            }
+
+            .endpoint-name {
+                font-size: 14px;
+            }
+
+            .endpoint-desc {
+                font-size: 12px;
+            }
         }
 
         @media (max-width: 480px) {
             nav {
                 width: 95%;
-                padding: 12px 20px;
+                padding: 12px 16px;
             }
             
             .logo {
-                font-size: 20px;
+                font-size: 18px;
             }
 
             .playground-title {
                 font-size: 2rem;
             }
 
+            .playground-subtitle {
+                font-size: 1rem;
+            }
+
             .input-panel, .output-panel {
-                padding: 16px;
+                padding: 16px 12px;
             }
 
-            .segmented-bar {
-                height: 25px;
+            .form-group {
+                margin-bottom: 16px;
             }
 
-            .bar-controls {
+            .form-input, .form-select, .form-textarea {
+                padding: 10px 12px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 100%;
+            }
+
+            .sidebar {
+                width: 260px;
+            }
+
+            .sidebar-content {
+                padding: 20px 16px;
+            }
+
+            .endpoint-list {
+                gap: 8px;
+            }
+
+            .endpoint-item {
+                padding: 10px;
+            }
+
+            .mobile-menu-btn {
+                top: 110px;
+                left: 15px;
+                padding: 10px;
+            }
+
+            .api-status-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .btn-refresh {
+                align-self: stretch;
                 justify-content: center;
+            }
+
+            .code-snippet-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .language-tabs {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .copy-code-btn {
+                position: static;
+                margin-top: 12px;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .playground-title {
+                font-size: 1.75rem;
+            }
+
+            .input-panel, .output-panel {
+                padding: 12px 8px;
+            }
+
+            .sidebar {
+                width: 240px;
+            }
+
+            .api-status-title {
+                font-size: 14px;
+            }
+
+            .btn-refresh {
+                font-size: 11px;
+                padding: 5px 10px;
             }
         }
 
         .mobile-menu-btn {
             display: none;
+        }
+
+        /* Mobile backdrop */
+        .mobile-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-backdrop.show {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .mobile-backdrop.show {
+                display: block;
+            }
         }
 
         /* Image Display */
@@ -444,8 +575,8 @@
             margin-top: 16px;
         }
 
-        /* Segmented Bar Styles */
-        .segmented-bar-container {
+        /* API Status Styles */
+        .api-status-container {
             margin-top: 24px;
             padding: 20px;
             border-radius: 12px;
@@ -453,14 +584,14 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .segmented-bar-header {
+        .api-status-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
         }
 
-        .segmented-bar-title {
+        .api-status-title {
             font-size: 1rem;
             font-weight: 600;
             color: #ffffff;
@@ -469,80 +600,7 @@
             gap: 8px;
         }
 
-        .segmented-bar {
-            width: 100%;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            display: flex;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .segment {
-            flex: 1;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .segment:last-child {
-            border-right: none;
-        }
-
-        .segment:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        /* Segment visual variations */
-        .segment.height-variation {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .segment.height-variation .segment-bar {
-            width: 80%;
-            background: linear-gradient(to top, #4CAF50, #81C784);
-            border-radius: 2px 2px 0 0;
-            transition: height 0.3s ease;
-            min-height: 2px;
-        }
-
-        .segment.density-variation {
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
-            background-size: 4px 4px;
-        }
-
-        .segment.opacity-variation {
-            background: rgba(100, 200, 255, 0.2);
-        }
-
-        .segment.internal-bars {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-evenly;
-            padding: 2px;
-        }
-
-        .segment.internal-bars .mini-bar {
-            width: 3px;
-            background: linear-gradient(to top, #2196F3, #64B5F6);
-            border-radius: 1px;
-            min-height: 2px;
-            transition: height 0.3s ease;
-        }
-
-        .bar-controls {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .bar-control-btn {
+        .btn-refresh {
             padding: 6px 12px;
             border-radius: 6px;
             background: rgba(255, 255, 255, 0.05);
@@ -552,38 +610,93 @@
             transition: all 0.3s ease;
             font-size: 12px;
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .bar-control-btn.active {
+        .btn-refresh:hover {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .bar-control-btn:hover {
+        .api-status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .status-item {
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+
+        .status-item:hover {
             background: rgba(255, 255, 255, 0.08);
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-name {
+            font-size: 14px;
+            font-weight: 500;
             color: #ffffff;
         }
 
-        .segment-tooltip {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 1000;
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
         }
 
-        .segment:hover .segment-tooltip {
-            opacity: 1;
+        .status-indicator.online {
+            background: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+        }
+
+        .status-indicator.offline {
+            background: #f44336;
+            box-shadow: 0 0 8px rgba(244, 67, 54, 0.5);
+        }
+
+        .status-indicator.checking {
+            background: #ff9800;
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.5);
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .status-text.online {
+            color: #4CAF50;
+        }
+
+        .status-text.offline {
+            color: #f44336;
+        }
+
+        .status-text.checking {
+            color: #ff9800;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
         /* Code Snippet Panel */
@@ -704,7 +817,12 @@
     </nav>
 
     <!-- Mobile Menu Button -->
-    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <span>☰</span> Menu
+    </button>
+
+    <!-- Mobile Backdrop -->
+    <div class="mobile-backdrop" id="mobile-backdrop" onclick="closeSidebar()"></div>
 
     <div class="main-container">
         <!-- Sidebar -->
@@ -872,21 +990,18 @@
                         <button class="btn btn-primary" onclick="testTranscription()" id="transcribe-btn" disabled>Transcribe Audio</button>
                     </div>
 
-                    <!-- Segmented Bar Panel -->
-                    <div class="segmented-bar-container" id="segmented-bar-container">
-                        <div class="segmented-bar-header">
-                            <div class="segmented-bar-title">
-                                <span>📊</span> API Request Timeline
+                    <!-- API Status Panel -->
+                    <div class="api-status-container" id="api-status-container">
+                        <div class="api-status-header">
+                            <div class="api-status-title">
+                                <span>🔍</span> API Service Status
                             </div>
+                            <button class="btn-refresh" onclick="checkAllAPIStatus()">
+                                <span>🔄</span> Refresh
+                            </button>
                         </div>
-                        <div class="bar-controls">
-                            <div class="bar-control-btn active" onclick="switchBarStyle('height')">Height</div>
-                            <div class="bar-control-btn" onclick="switchBarStyle('density')">Density</div>
-                            <div class="bar-control-btn" onclick="switchBarStyle('opacity')">Opacity</div>
-                            <div class="bar-control-btn" onclick="switchBarStyle('internal')">Internal Bars</div>
-                        </div>
-                        <div class="segmented-bar" id="segmented-bar">
-                            <!-- Segments will be generated by JavaScript -->
+                        <div class="api-status-grid" id="api-status-grid">
+                            <!-- Status items will be generated by JavaScript -->
                         </div>
                     </div>
 
@@ -925,91 +1040,133 @@
 
     <script>
         let currentEndpoint = 'chat';
-        let currentBarStyle = 'height';
-        let requestHistory = [];
-        let segmentData = [];
-
-        // Initialize segmented bar data (50 segments representing time intervals)
-        function initializeSegmentedBar() {
-            segmentData = Array(50).fill(0).map(() => Math.floor(Math.random() * 20));
-            renderSegmentedBar();
-        }
+        let apiStatusData = {};
 
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
+            
             sidebar.classList.toggle('open');
+            backdrop.classList.toggle('show');
         }
 
-        // Segmented Bar Functions
-        function switchBarStyle(style) {
-            currentBarStyle = style;
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('mobile-backdrop');
             
-            // Update active button
-            document.querySelectorAll('.bar-control-btn').forEach(btn => {
-                btn.classList.remove('active');
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('show');
+        }
+
+        // API Status Functions
+        const API_ENDPOINTS = [
+            { name: 'Chat Completions', endpoint: '/v1/chat/completions', method: 'POST' },
+            { name: 'Image Generation', endpoint: '/generate', method: 'POST' },
+            { name: 'Web Search', endpoint: '/websearch', method: 'POST' },
+            { name: 'Image Search', endpoint: '/imgsearch', method: 'POST' },
+            { name: 'Video Search', endpoint: '/videosearch', method: 'POST' },
+            { name: 'TTS Providers', endpoint: '/ttsproviders', method: 'GET' },
+            { name: 'TTS Generation', endpoint: '/ttsgenerate', method: 'POST' },
+            { name: 'Audio Transcription', endpoint: '/transcribe', method: 'POST' },
+            { name: 'Health Check', endpoint: '/health', method: 'GET' }
+        ];
+
+        function initializeAPIStatus() {
+            renderAPIStatus();
+            checkAllAPIStatus();
+        }
+
+        function renderAPIStatus() {
+            const statusGrid = document.getElementById('api-status-grid');
+            statusGrid.innerHTML = '';
+            
+            API_ENDPOINTS.forEach(api => {
+                const statusItem = document.createElement('div');
+                statusItem.className = 'status-item';
+                statusItem.innerHTML = `
+                    <div class="status-info">
+                        <div class="status-indicator checking" id="indicator-${api.endpoint}"></div>
+                        <div class="status-name">${api.name}</div>
+                    </div>
+                    <div class="status-text checking" id="status-${api.endpoint}">Checking...</div>
+                `;
+                statusGrid.appendChild(statusItem);
             });
-            event.target.classList.add('active');
-            
-            renderSegmentedBar();
         }
 
-        function renderSegmentedBar() {
-            const segmentedBar = document.getElementById('segmented-bar');
-            segmentedBar.innerHTML = '';
+        async function checkAPIStatus(api) {
+            const baseUrl = 'https://user669-omniapi.hf.space';
+            const indicator = document.getElementById(`indicator-${api.endpoint}`);
+            const statusText = document.getElementById(`status-${api.endpoint}`);
             
-            segmentData.forEach((value, index) => {
-                const segment = document.createElement('div');
-                segment.className = `segment ${currentBarStyle}-variation`;
+            try {
+                // Set checking state
+                indicator.className = 'status-indicator checking';
+                statusText.className = 'status-text checking';
+                statusText.textContent = 'Checking...';
                 
-                // Add tooltip
-                const tooltip = document.createElement('div');
-                tooltip.className = 'segment-tooltip';
-                const timeAgo = `${Math.floor((49 - index) * 2)} min ago`;
-                tooltip.textContent = `${value} requests (${timeAgo})`;
-                segment.appendChild(tooltip);
+                let response;
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
                 
-                switch(currentBarStyle) {
-                    case 'height':
-                        const segmentBar = document.createElement('div');
-                        segmentBar.className = 'segment-bar';
-                        segmentBar.style.height = `${Math.max(2, (value / 20) * 100)}%`;
-                        segment.appendChild(segmentBar);
-                        break;
-                        
-                    case 'density':
-                        const density = Math.max(0.1, value / 20);
-                        segment.style.backgroundSize = `${4 / density}px ${4 / density}px`;
-                        break;
-                        
-                    case 'opacity':
-                        const opacity = Math.max(0.1, value / 20);
-                        segment.style.background = `rgba(100, 200, 255, ${opacity})`;
-                        break;
-                        
-                    case 'internal':
-                        const numBars = Math.min(5, Math.max(1, Math.ceil(value / 4)));
-                        for (let i = 0; i < numBars; i++) {
-                            const miniBar = document.createElement('div');
-                            miniBar.className = 'mini-bar';
-                            miniBar.style.height = `${Math.max(10, (value / 20) * 80)}%`;
-                            segment.appendChild(miniBar);
-                        }
-                        break;
+                if (api.method === 'GET') {
+                    response = await fetch(`${baseUrl}${api.endpoint}`, {
+                        method: 'GET',
+                        signal: controller.signal
+                    });
+                } else {
+                    // For POST endpoints, we'll just check if they respond (even with errors)
+                    response = await fetch(`${baseUrl}${api.endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({}),
+                        signal: controller.signal
+                    });
                 }
                 
-                segmentedBar.appendChild(segment);
-            });
+                clearTimeout(timeoutId);
+                
+                // Consider 2xx, 4xx as "online" (service is responding)
+                // Only 5xx or network errors are "offline"
+                if (response.status < 500) {
+                    indicator.className = 'status-indicator online';
+                    statusText.className = 'status-text online';
+                    statusText.textContent = 'Online';
+                    apiStatusData[api.endpoint] = { status: 'online', lastCheck: new Date() };
+                } else {
+                    indicator.className = 'status-indicator offline';
+                    statusText.className = 'status-text offline';
+                    statusText.textContent = 'Error';
+                    apiStatusData[api.endpoint] = { status: 'offline', lastCheck: new Date() };
+                }
+                
+            } catch (error) {
+                indicator.className = 'status-indicator offline';
+                statusText.className = 'status-text offline';
+                if (error.name === 'AbortError') {
+                    statusText.textContent = 'Timeout';
+                } else {
+                    statusText.textContent = 'Offline';
+                }
+                apiStatusData[api.endpoint] = { status: 'offline', lastCheck: new Date(), error: error.message };
+            }
         }
 
-        function updateSegmentedBar() {
-            // Simulate new request data
-            segmentData.shift(); // Remove oldest
-            segmentData.push(Math.floor(Math.random() * 20)); // Add new
-            renderSegmentedBar();
+        async function checkAllAPIStatus() {
+            const refreshBtn = document.querySelector('.btn-refresh');
+            refreshBtn.style.opacity = '0.5';
+            refreshBtn.style.pointerEvents = 'none';
+            
+            // Check all APIs concurrently
+            const promises = API_ENDPOINTS.map(api => checkAPIStatus(api));
+            await Promise.all(promises);
+            
+            refreshBtn.style.opacity = '1';
+            refreshBtn.style.pointerEvents = 'auto';
         }
 
-        // Update segmented bar every 5 seconds
-        setInterval(updateSegmentedBar, 5000);
+        // Auto-refresh status every 2 minutes
+        setInterval(checkAllAPIStatus, 120000);
 
         function selectEndpoint(endpoint) {
             // Update active state
@@ -1680,7 +1837,7 @@ axios.post('${baseUrl}${endpointMap[endpoint]}', data, {
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            initializeSegmentedBar();
+            initializeAPIStatus();
             selectEndpoint('chat');
             addCodeUpdateListeners();
             
