@@ -618,6 +618,16 @@
                 font-size: 11px;
                 max-height: 150px;
             }
+
+            .image-result {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .image-result {
+                max-width: 280px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -683,7 +693,7 @@
 
         /* Image Display */
         .image-result {
-            max-width: 100%;
+            max-width: 400px;
             width: 100%;
             height: auto;
             border-radius: 8px;
@@ -692,10 +702,13 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             cursor: pointer;
             transition: transform 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .image-result:hover {
-            transform: scale(1.02);
+            transform: scale(1.05);
         }
 
         .image-container {
