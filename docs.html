@@ -6,7 +6,7 @@
     
     <!-- SEO Meta Tags -->
     <title>Documentation - OmniAPI | Complete API Reference</title>
-    <meta name="description" content="Complete documentation for OmniAPI services including chat completions, image generation, web search, and text-to-speech endpoints with examples.">
+    <meta name="description" content="Complete documentation for OmniAPI services including chat completions with 11+ models (Grok, GPT-4, LLaMA), image generation, web search, and text-to-speech endpoints with examples.">
     <meta name="keywords" content="OmniAPI documentation, API reference, chat completions, image generation, web search, text to speech">
     <meta name="author" content="OmniAPI">
     <meta name="robots" content="index, follow">
@@ -499,6 +499,10 @@
                         <div class="nav-method">GET</div>
                         Chat Models
                     </a>
+                    <a href="#all-models" class="endpoint-nav-item">
+                        <div class="nav-method">GET</div>
+                        All Models
+                    </a>
                     <a href="#image" class="endpoint-nav-item">
                         <div class="nav-method">POST</div>
                         Image Generation
@@ -564,7 +568,7 @@
                     <span class="endpoint-path">/v1/chat/completions</span>
                 </div>
                 <p class="endpoint-description">
-                    Generate AI chat responses using advanced language models. This endpoint provides access to multiple premium AI models for intelligent conversations, text generation, and question answering.
+                    Generate AI chat responses using advanced language models. This endpoint provides access to 11+ premium AI models including Grok-3, GPT-4, LLaMA, Qwen, and DeepSeek for intelligent conversations, text generation, and question answering.
                 </p>
 
                 <div class="subsection">
@@ -599,6 +603,7 @@
 
                 <div class="subsection">
                     <h3>Available Models</h3>
+                    <h4>ExoML Models</h4>
                     <div class="model-tags">
                         <span class="model-tag">qwen-3-235b</span>
                         <span class="model-tag">llama-4-maverick</span>
@@ -609,6 +614,15 @@
                         <span class="model-tag">gpt-4o-mini</span>
                         <span class="model-tag">qwq-32b</span>
                     </div>
+                    <h4>Grok Models</h4>
+                    <div class="model-tags">
+                        <span class="model-tag">grok-3</span>
+                        <span class="model-tag">grok-3-fast</span>
+                        <span class="model-tag">grok-3-mini</span>
+                    </div>
+                    <p style="margin-top: 16px; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+                        <strong>Total:</strong> 11 chat models available. Models are automatically routed to the appropriate provider (ExoML or Grok) based on selection.
+                    </p>
                 </div>
 
                 <div class="subsection">
@@ -624,7 +638,7 @@
                                 <pre>curl -X POST "https://user669-omniapi.hf.space/v1/chat/completions" \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "gpt-4o",
+    "model": "grok-3",
     "prompt": "Explain quantum computing in simple terms",
     "system_prompt": "You are a helpful physics teacher who explains complex topics simply."
   }'</pre>
@@ -642,7 +656,7 @@
 
 url = "https://user669-omniapi.hf.space/v1/chat/completions"
 data = {
-    "model": "gpt-4o",
+    "model": "grok-3",
     "prompt": "Explain quantum computing in simple terms",
     "system_prompt": "You are a helpful physics teacher who explains complex topics simply."
 }
@@ -666,7 +680,7 @@ print(result["response"])</pre>
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    model: 'gpt-4o',
+    model: 'grok-3',
     prompt: 'Explain quantum computing in simple terms',
     system_prompt: 'You are a helpful physics teacher who explains complex topics simply.'
   })
@@ -756,8 +770,104 @@ print(models["models"])</pre>
     "deepseek-r1",
     "gpt-4o",
     "gpt-4o-mini",
-    "qwq-32b"
+    "qwq-32b",
+    "grok-3",
+    "grok-3-fast",
+    "grok-3-mini"
   ]
+}</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All Models -->
+            <div id="all-models" class="endpoint-section glass">
+                <div class="endpoint-title">
+                    <span class="method-badge">GET</span>
+                    <span class="endpoint-path">/models</span>
+                </div>
+                <p class="endpoint-description">
+                    Retrieve comprehensive information about all available models across all services. This endpoint returns categorized models for chat completions, image generation, and TTS providers with detailed statistics.
+                </p>
+
+                <div class="subsection">
+                    <h3>Examples</h3>
+                    <div class="examples-grid">
+                        <div class="example-card">
+                            <div class="example-title">cURL</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">bash</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>curl -X GET "https://user669-omniapi.hf.space/models"</pre>
+                            </div>
+                        </div>
+
+                        <div class="example-card">
+                            <div class="example-title">Python</div>
+                            <div class="code-block">
+                                <div class="code-header">
+                                    <span class="code-lang">python</span>
+                                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                                </div>
+                                <pre>import requests
+
+response = requests.get("https://user669-omniapi.hf.space/models")
+models_info = response.json()
+
+print("Chat Models:", models_info["chat_models"]["total"])
+print("Image Models:", models_info["image_models"]["total"])
+print("TTS Providers:", models_info["tts_providers"]["total"])</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3>Response</h3>
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-lang">json</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre>{
+  "chat_models": {
+    "total": 11,
+    "exoml_models": [
+      "qwen-3-235b", "llama-4-maverick", "llama-4-scout",
+      "gpt-4.1", "deepseek-r1", "gpt-4o", "gpt-4o-mini", "qwq-32b"
+    ],
+    "grok_models": ["grok-3", "grok-3-fast", "grok-3-mini"],
+    "all_models": [
+      "qwen-3-235b", "llama-4-maverick", "llama-4-scout",
+      "gpt-4.1", "deepseek-r1", "gpt-4o", "gpt-4o-mini", "qwq-32b",
+      "grok-3", "grok-3-fast", "grok-3-mini"
+    ]
+  },
+  "image_models": {
+    "total": 5,
+    "flux_models": ["flux.1-dev", "flux.1-schnell", "flux.1-pro"],
+    "exo_models": ["exo-image"],
+    "gpt_models": ["gpt-image"],
+    "all_models": ["flux.1-dev", "flux.1-schnell", "flux.1-pro", "exo-image", "gpt-image"]
+  },
+  "tts_providers": {
+    "total": 7,
+    "providers": [
+      "GesseritTTS", "SpeechMaTTS", "SthirTTS", "StreamElements",
+      "DeepgramTTS", "OpenAIFMTTS", "MurfAITTS"
+    ]
+  },
+  "services": {
+    "chat_completions": "/v1/chat/completions",
+    "image_generation": "/generate",
+    "web_search": "/websearch",
+    "image_search": "/imgsearch",
+    "video_search": "/videosearch",
+    "text_to_speech": "/ttsgenerate",
+    "audio_transcription": "/transcribe"
+  }
 }</pre>
                     </div>
                 </div>
