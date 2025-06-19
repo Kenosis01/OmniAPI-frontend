@@ -533,42 +533,83 @@
     </footer>
 
     <script>
-        // Service definitions
+        // Service definitions - Updated with actual endpoints from app.py
         const services = [
             {
                 name: 'Chat Completions API',
-                description: 'AI chat and conversation services',
+                description: 'AI chat and conversation services with multiple models',
                 endpoint: '/v1/chat/completions',
+                method: 'POST',
                 status: 'operational'
             },
             {
                 name: 'Image Generation API',
-                description: 'AI image creation and processing',
-                endpoint: '/v1/images/generations',
+                description: 'AI image creation with Flux and GPT models',
+                endpoint: '/generate',
+                method: 'POST',
                 status: 'operational'
             },
             {
                 name: 'Web Search API',
-                description: 'Web, image, and video search services',
-                endpoint: '/v1/search',
+                description: 'DuckDuckGo web search and URL scraping',
+                endpoint: '/websearch',
+                method: 'POST',
+                status: 'operational'
+            },
+            {
+                name: 'Image Search API',
+                description: 'Search for images using DuckDuckGo',
+                endpoint: '/imgsearch',
+                method: 'POST',
+                status: 'operational'
+            },
+            {
+                name: 'Video Search API',
+                description: 'Search for videos using DuckDuckGo',
+                endpoint: '/videosearch',
+                method: 'POST',
                 status: 'operational'
             },
             {
                 name: 'Text-to-Speech API',
-                description: 'Audio synthesis and voice generation',
-                endpoint: '/v1/audio/speech',
+                description: 'Convert text to speech with multiple providers',
+                endpoint: '/ttsgenerate',
+                method: 'POST',
+                status: 'operational'
+            },
+            {
+                name: 'TTS Providers API',
+                description: 'Get available TTS providers',
+                endpoint: '/ttsproviders',
+                method: 'GET',
                 status: 'operational'
             },
             {
                 name: 'Audio Transcription API',
-                description: 'Speech-to-text conversion services',
-                endpoint: '/v1/audio/transcriptions',
+                description: 'Convert audio files to text',
+                endpoint: '/transcribe',
+                method: 'POST',
+                status: 'operational'
+            },
+            {
+                name: 'Models API',
+                description: 'Get available AI models information',
+                endpoint: '/models',
+                method: 'GET',
+                status: 'operational'
+            },
+            {
+                name: 'Health Check',
+                description: 'API health and status monitoring',
+                endpoint: '/health',
+                method: 'GET',
                 status: 'operational'
             },
             {
                 name: 'Main Website',
-                description: 'OmniAPI main website and documentation',
+                description: 'OmniAPI main website and dashboard',
                 endpoint: '/',
+                method: 'GET',
                 status: 'operational'
             }
         ];
